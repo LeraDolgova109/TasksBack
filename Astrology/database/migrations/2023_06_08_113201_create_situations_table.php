@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
+            $table->foreignId('tarot_card_id')->constrained('tarot_cards')->cascadeOnDelete();
+            $table->foreignId('tarot_card_description_id')->constrained('tarot_cards')->cascadeOnDelete();
         });
     }
 

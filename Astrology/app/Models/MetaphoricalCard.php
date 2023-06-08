@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class MetaphoricalCard extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'image'
+    ];
+
+    protected $hidden = [];
+
 }
