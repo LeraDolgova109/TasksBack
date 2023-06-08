@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('zodiac_signs', function (Blueprint $table) {
+        Schema::create('metaphorical_cards', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
+            $table->string('image');
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('zodiac_signs');
+        Schema::dropIfExists('metaphorical_cards');
     }
 };

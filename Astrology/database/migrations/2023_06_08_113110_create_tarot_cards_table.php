@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('zodiac_signs', function (Blueprint $table) {
+        Schema::create('tarot_cards', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
+            $table->string('image');
+            $table->text('standard_description');
+            $table->foreignId('tarot_card_category_id')->constrained('tarot_card_categories')->cascadeOnDelete();
         });
     }
 
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('zodiac_signs');
+        Schema::dropIfExists('tarot_cards');
     }
 };
