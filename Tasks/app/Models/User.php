@@ -56,4 +56,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected function projects(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
 }
