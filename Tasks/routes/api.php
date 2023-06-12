@@ -27,5 +27,7 @@ Route::prefix('auth')->middleware('api')->controller(\App\Http\Controllers\AuthC
 
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('/project', \App\Http\Controllers\ProjectController::class);
+    Route::resource('/category', \App\Http\Controllers\CategoryController::class);
+    Route::resource('/task', \App\Http\Controllers\TaskController::class);
 });
 

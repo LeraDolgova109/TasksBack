@@ -19,12 +19,12 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('name');
-            $table->text('description');
-            $table->string('status');
+            $table->text('description')->nullable();
+            $table->string('status')->default('Created');
             $table->string('creation_date');
             $table->string('deadline');
-            $table->boolean('isImportant');
-            $table->double('progress');
+            $table->boolean('is_important')->default(0);
+            $table->double('progress')->default(0);
         });
     }
 

@@ -2,23 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
+use App\Models\Category;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\UserInProject;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function project($projectID): \Illuminate\Http\JsonResponse
     {
-
+        $project = Project::with('admin')->find($projectID);
+        if ($project == null)
+        {
+            return response() -> json(['error' => 'Project Not Found'], 404);
+        }
+        $project->users = UserInProject::with('user')->where('project_id', '=', $projectID)->get();
+        $project->category = Category::where('project_id', '=', $projectID)->get();
+        $project->tasks = Task::with('performers.user', 'category')->where('project_id', '=', (int)$projectID)->get();
+        return response() -> json($project);
     }
 
-    public function show()
-    {
 
+    public function index(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $tasks = Task::where('project_id', '=', $request['project_id'])->get();
+        return response() -> json($tasks);
     }
 
-    public function store()
+    public function show($taskID)
     {
+        $task = Task::find($taskID);
+        if ($task == null)
+        {
+            return response() -> json(['error' => 'Task Not Found'], 404);
+        }
+        return response() -> json($task);
+    }
 
+    public function store(TaskRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validated();
+        $task = Task::create([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'creation_date' => $data['creation_date'],
+            'deadline' => $data['deadline'],
+            'status' => 'Created',
+            'progress' => 0,
+            'is_important' => $data['is_important'],
+            'category_id' => $data['category_id'],
+            'project_id' => $data['project_id']
+        ]);
+        return $this->project($data['project_id']);
     }
 
     public function update()
