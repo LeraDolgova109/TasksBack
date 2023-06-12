@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('performers', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
         });

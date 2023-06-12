@@ -14,12 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::controller(\App\Http\Controllers\UserController::class)->group(function() {
+    Route::post('register', 'register');
+});
 
 Route::prefix('auth')->middleware('api')->controller(\App\Http\Controllers\AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::get('user', 'user');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
-    Route::post('register', 'register');
+});
+
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::resource('/project', \App\Http\Controllers\ProjectController::class);
 });
 

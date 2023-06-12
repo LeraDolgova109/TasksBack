@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('user_in_projects', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->boolean('isModerator');

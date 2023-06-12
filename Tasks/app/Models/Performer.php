@@ -15,7 +15,11 @@ class Performer extends Model
       'isModerator'
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

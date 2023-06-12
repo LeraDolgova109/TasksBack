@@ -10,11 +10,14 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
-      'project_id',
-      'name'
+        'project_id',
+        'name'
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

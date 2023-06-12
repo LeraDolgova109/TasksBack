@@ -21,7 +21,9 @@ class Task extends Model
     ];
 
     protected $hidden = [
-        'category_id'
+        'category_id',
+        'created_at',
+        'updated_at'
     ];
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -32,5 +34,10 @@ class Task extends Model
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function performers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Performer::class);
     }
 }
