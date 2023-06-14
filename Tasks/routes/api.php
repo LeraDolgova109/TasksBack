@@ -28,6 +28,14 @@ Route::prefix('auth')->middleware('api')->controller(\App\Http\Controllers\AuthC
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('/project', \App\Http\Controllers\ProjectController::class);
     Route::resource('/category', \App\Http\Controllers\CategoryController::class);
-    Route::resource('/task', \App\Http\Controllers\TaskController::class);
+    Route::prefix('task')->controller(\App\Http\Controllers\TaskController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{task}', 'show');
+        Route::post('/', 'store');
+        Route::put('/{task}', 'update');
+        Route::put('/status/{task}', 'status');
+        Route::put('/progress/{task}', 'progress');
+        Route::delete('/{task}', 'destroy');
+    });
 });
 

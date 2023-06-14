@@ -61,7 +61,7 @@ class CategoryController extends Controller
         return $this->project($category['project_id']);
     }
 
-    public function destroy($categoryID)
+    public function destroy($categoryID): \Illuminate\Http\JsonResponse
     {
         $category = Category::find($categoryID);
         $projectID = $category['projectID'];

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskProgressRequest;
 use App\Http\Requests\TaskRequest;
+use App\Http\Requests\TaskStatusRequest;
+use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\Task;
@@ -31,7 +34,7 @@ class TaskController extends Controller
         return response() -> json($tasks);
     }
 
-    public function show($taskID)
+    public function show($taskID): \Illuminate\Http\JsonResponse
     {
         $task = Task::find($taskID);
         if ($task == null)
@@ -58,18 +61,59 @@ class TaskController extends Controller
         return $this->project($data['project_id']);
     }
 
-    public function update()
+    public function update(TaskUpdateRequest $request, $taskID): \Illuminate\Http\JsonResponse
     {
-
+        $data = $request->validated();
+        $task = Task::find($taskID);
+        if ($task == null)
+        {
+            return response() -> json(['error' => 'Task Not Found'], 404);
+        }
+        $task->update([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'deadline' => $data['deadline'],
+            'status' => 'Created',
+            'progress' => 0,
+            'category_id' => $data['category_id'],
+            'is_important' => $data['is_important'],
+        ]);
+        return $this->project($task['project_id']);
     }
 
-    public function status()
+    public function status(TaskStatusRequest $request, $taskID): \Illuminate\Http\JsonResponse
     {
-
+        $task = Task::find($taskID);
+        if ($task == null)
+        {
+            return response()->json(['error' => 'Task Not Found'], 404);
+        }
+        $task->update([
+            'status' => $request['status']
+        ]);
+        return $this->project($task['project_id']);
     }
 
-    public function delete()
+    public function progress(TaskProgressRequest $request, $taskID): \Illuminate\Http\JsonResponse
     {
-
+        $task = Task::find($taskID);
+        if ($task == null)
+        {
+            return response()->json(['error' => 'Task Not Found'], 404);
+        }
+        $task->update([
+            'progress' => $request['progress']
+        ]);
+        return $this->project($task['project_id']);
+    }
+    public function destroy($taskID): \Illuminate\Http\JsonResponse
+    {
+        $task = Task::find($taskID);
+        if ($task == null)
+        {
+            return response()->json(['error' => 'Task Not Found'], 404);
+        }
+        $task->delete();
+        return $this->project($task['project_id']);
     }
 }
