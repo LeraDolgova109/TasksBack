@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserProjectRequest;
+use App\Http\Requests\UserProjectUpdateRequest;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use App\Models\UserInProject;
 use Illuminate\Http\Request;
 
@@ -23,42 +25,90 @@ class UserInProjectController extends Controller
         $project->tasks = Task::with('performers.user', 'category')->where('project_id', '=', (int)$projectID)->get();
         return response() -> json($project);
     }
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        $users = UserInProject::where('project_id', '=', $request['project_id'])->get();
+        $users = User::select('email','nickname')->get();
         return response() -> json($users);
     }
 
     public function show(Request $request): \Illuminate\Http\JsonResponse
     {
-        $users = UserInProject::where([
+        $user = UserInProject::where([
             ['user_id', '=', $request['user_id']],
             ['project_id', '=', $request['project_id']]
         ]);
-        if ($users == null)
+        if ($user == null)
         {
             return response() -> json(['error' => 'User Not Found'], 404);
         }
-        return response() -> json($users);
+        return response() -> json($user);
     }
 
-    public function store(UserProjectRequest $request)
+    public function invitations(): \Illuminate\Http\JsonResponse
+    {
+        $user = auth()->user();
+        $userInProject = UserInProject::where([
+            ['user_id', '=', $user['id']],
+            ['accepted', '=', false]
+        ])->get();
+        return response() -> json($userInProject);
+    }
+
+    public function store(UserProjectRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
+        $user = User::where('email', '=', $data['email']);
         UserInProject::create([
-           'user_id' => $data['user_id'],
-           'project_id' => $data['project_id'],
-           'is_moderator' => $data['']
+            'user_id' => $user['id'],
+            'project_id' => $data['project_id'],
+            'is_moderator' => $data['is_moderator'],
+            'accepted' => false
         ]);
+        return $this->project($data['project_id']);
     }
 
-    public function update()
+    public function update(UserProjectUpdateRequest $request): \Illuminate\Http\JsonResponse
     {
-
+        $data = $request->validated();
+        $user = UserInProject::where([
+            ['user_id', '=', $request['user_id']],
+            ['project_id', '=', $request['project_id']]
+        ]);
+        $user->update([
+            'is_moderator' => $data['is_moderator'],
+            'accepted' => $data['accepted']
+        ]);
+        return $this->project($data['project_id']);
     }
 
-    public function delete()
+    public function accept(UserProjectUpdateRequest $request): \Illuminate\Http\JsonResponse
     {
+        $data = $request->validated();
+        $user = UserInProject::where([
+            ['user_id', '=', $request['user_id']],
+            ['project_id', '=', $request['project_id']]
+        ]);
+        if ($data['accept'])
+        {
+            $user->update([
+                'accepted' => $data['accept']
+            ]);
+        }
+        else
+        {
+            $user->delete();
+        }
+        return $this->invitations();
+    }
 
+    public function destroy(UserProjectUpdateRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validated();
+        $user = UserInProject::where([
+            ['user_id', '=', $request['user_id']],
+            ['project_id', '=', $request['project_id']]
+        ]);
+        $user->delete();
+        return $this->project($data['project_id']);
     }
 }

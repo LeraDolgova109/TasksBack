@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PerformerRequest;
 use App\Models\Category;
+use App\Models\Performer;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\UserInProject;
@@ -33,9 +35,15 @@ class PerformerController extends Controller
 
     }
 
-    public function store()
+    public function store(PerformerRequest $request): \Illuminate\Http\JsonResponse
     {
-
+        $data = $request->validated();
+        $task = Task::where('id', '=', $data['task_id']);
+        Performer::create([
+            'task_id' => $data['task_id'],
+            'user_id' => $data['user_id'],
+        ]);
+        return $this->project($task['project_id']);
     }
 
     public function update()
@@ -43,8 +51,14 @@ class PerformerController extends Controller
 
     }
 
-    public function delete()
+    public function delete(PerformerRequest $request): \Illuminate\Http\JsonResponse
     {
-
+        $data = $request->validated();
+        $task = Task::where('id', '=', $data['task_id']);
+        Performer::create([
+            'task_id' => $data['task_id'],
+            'user_id' => $data['user_id'],
+        ]);
+        return $this->project($task['project_id']);
     }
 }

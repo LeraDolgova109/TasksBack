@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->boolean('isModerator')->default(false);
+            $table->boolean('accepted')->default(false);
         });
     }
 

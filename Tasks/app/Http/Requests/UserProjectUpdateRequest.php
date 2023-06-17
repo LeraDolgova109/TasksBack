@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserProjectRequest extends FormRequest
+class UserProjectUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,10 @@ class UserProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'user_id' => 'exists:users,id',
             'project_id' => 'required|exists:projects,id',
-            'is_moderator' => 'boolean'
+            'is_moderator' => 'boolean',
+            'accept' => 'boolean'
         ];
     }
 }
