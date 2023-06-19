@@ -27,7 +27,7 @@ class TaskUpdateRequest extends FormRequest
             'name' => 'required|string|min:1',
             'description' => 'string',
             'deadline' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'exists:categories,id',
             'progress' => 'required|regex:/^\d+(\.\d+)?$/',
             'status' => 'required|string|in:Created,InProcess,Finished',
             'is_important' => 'boolean'

@@ -16,7 +16,8 @@ class Category extends Model
 
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
+        'pivot'
     ];
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -24,8 +25,8 @@ class Category extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function tasks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function tasks(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(Task::class);
+        return $this->BelongsToMany(Task::class);
     }
 }

@@ -19,6 +19,14 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->string('name');
         });
+
+
+        Schema::create('category_task', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
+        });
     }
 
     /**

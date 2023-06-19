@@ -28,7 +28,7 @@ class TaskRequest extends FormRequest
             'description' => 'string',
             'creation_date' => 'required|string',
             'deadline' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'exists:categories,id',
             'project_id' => 'required|exists:projects,id',
             'is_important' => 'boolean'
         ];

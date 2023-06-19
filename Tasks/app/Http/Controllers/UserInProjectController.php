@@ -36,7 +36,7 @@ class UserInProjectController extends Controller
         $user = UserInProject::where([
             ['user_id', '=', $request['user_id']],
             ['project_id', '=', $request['project_id']]
-        ]);
+        ])->get();
         if ($user == null)
         {
             return response() -> json(['error' => 'User Not Found'], 404);
@@ -57,11 +57,11 @@ class UserInProjectController extends Controller
     public function store(UserProjectRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
-        $user = User::where('email', '=', $data['email']);
+        $user = User::where('email', '=', $data['email'])->first();
         UserInProject::create([
             'user_id' => $user['id'],
             'project_id' => $data['project_id'],
-            'is_moderator' => $data['is_moderator'],
+            'isModerator' => $data['is_moderator'],
             'accepted' => false
         ]);
         return $this->project($data['project_id']);
@@ -73,30 +73,30 @@ class UserInProjectController extends Controller
         $user = UserInProject::where([
             ['user_id', '=', $request['user_id']],
             ['project_id', '=', $request['project_id']]
-        ]);
+        ])->first();
         $user->update([
-            'is_moderator' => $data['is_moderator'],
-            'accepted' => $data['accepted']
+            'isModerator' => $data['is_moderator']
         ]);
         return $this->project($data['project_id']);
     }
 
     public function accept(UserProjectUpdateRequest $request): \Illuminate\Http\JsonResponse
     {
+        $user = auth()->user();
         $data = $request->validated();
-        $user = UserInProject::where([
-            ['user_id', '=', $request['user_id']],
-            ['project_id', '=', $request['project_id']]
-        ]);
+        $userInProject = UserInProject::where([
+            ['user_id', '=', $user['id']],
+            ['project_id', '=', $data['project_id']]
+        ])->first();
         if ($data['accept'])
         {
-            $user->update([
-                'accepted' => $data['accept']
+            $userInProject->update([
+                'accepted' => true
             ]);
         }
         else
         {
-            $user->delete();
+            $userInProject->delete();
         }
         return $this->invitations();
     }
@@ -107,7 +107,7 @@ class UserInProjectController extends Controller
         $user = UserInProject::where([
             ['user_id', '=', $request['user_id']],
             ['project_id', '=', $request['project_id']]
-        ]);
+        ])->first();
         $user->delete();
         return $this->project($data['project_id']);
     }

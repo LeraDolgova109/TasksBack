@@ -38,7 +38,7 @@ class PerformerController extends Controller
     public function store(PerformerRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
-        $task = Task::where('id', '=', $data['task_id']);
+        $task = Task::where('id', '=', $data['task_id'])->first();
         Performer::create([
             'task_id' => $data['task_id'],
             'user_id' => $data['user_id'],
@@ -51,14 +51,15 @@ class PerformerController extends Controller
 
     }
 
-    public function delete(PerformerRequest $request): \Illuminate\Http\JsonResponse
+    public function destroy(PerformerRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
-        $task = Task::where('id', '=', $data['task_id']);
-        Performer::create([
-            'task_id' => $data['task_id'],
-            'user_id' => $data['user_id'],
-        ]);
+        $task = Task::where('id', '=', $data['task_id'])->first();
+        $performer = Performer::where([
+            ['user_id', '=', $data['user_id']],
+            ['task_id', '=', $data['task_id']]
+        ])->first();
+        $performer->delete();
         return $this->project($task['project_id']);
     }
 }

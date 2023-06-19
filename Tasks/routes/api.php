@@ -46,6 +46,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         Route::put('/accept', 'accept');
         Route::delete('/', 'destroy');
     });
-    Route::resource('/performer', \App\Http\Controllers\PerformerController::class);
+    Route::post('/performer', [\App\Http\Controllers\PerformerController::class, 'store']);
+    Route::delete('/performer', [\App\Http\Controllers\PerformerController::class, 'destroy']);
 });
 

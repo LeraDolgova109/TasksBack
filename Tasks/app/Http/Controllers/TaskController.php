@@ -36,7 +36,7 @@ class TaskController extends Controller
 
     public function show($taskID): \Illuminate\Http\JsonResponse
     {
-        $task = Task::find($taskID);
+        $task = Task::with(['category', 'performers'])->find($taskID);
         if ($task == null)
         {
             return response() -> json(['error' => 'Task Not Found'], 404);
@@ -55,9 +55,12 @@ class TaskController extends Controller
             'status' => 'Created',
             'progress' => 0,
             'is_important' => $data['is_important'],
-            'category_id' => $data['category_id'],
             'project_id' => $data['project_id']
         ]);
+        if ($data['category_id'] !== null || $data['category_id'] !== [])
+        {
+            $task->category()->attach($data['category_id']);
+        }
         return $this->project($data['project_id']);
     }
 
@@ -75,9 +78,13 @@ class TaskController extends Controller
             'deadline' => $data['deadline'],
             'status' => 'Created',
             'progress' => 0,
-            'category_id' => $data['category_id'],
             'is_important' => $data['is_important'],
         ]);
+        if ($data['category_id'] !== null || $data['category_id'] !== [])
+        {
+            $task->category()->detach();
+            $task->category()->attach($data['category_id']);
+        }
         return $this->project($task['project_id']);
     }
 

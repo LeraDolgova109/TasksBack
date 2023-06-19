@@ -18,7 +18,6 @@ class Task extends Model
         'progress',
         'is_important',
         'project_id',
-        'category_id'
     ];
 
     protected $hidden = [
@@ -32,9 +31,9 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class);
     }
 
     public function performers(): \Illuminate\Database\Eloquent\Relations\HasMany
