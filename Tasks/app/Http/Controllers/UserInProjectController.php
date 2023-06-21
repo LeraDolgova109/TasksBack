@@ -47,7 +47,7 @@ class UserInProjectController extends Controller
     public function invitations(): \Illuminate\Http\JsonResponse
     {
         $user = auth()->user();
-        $userInProject = UserInProject::where([
+        $userInProject = UserInProject::with('project')->where([
             ['user_id', '=', $user['id']],
             ['accepted', '=', false]
         ])->get();

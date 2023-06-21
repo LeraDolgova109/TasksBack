@@ -28,7 +28,13 @@ Route::prefix('auth')->middleware('api')->controller(\App\Http\Controllers\AuthC
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::put('/user', [\App\Http\Controllers\UserController::class, 'update']);
     Route::resource('/project', \App\Http\Controllers\ProjectController::class);
-    Route::resource('/category', \App\Http\Controllers\CategoryController::class);
+    Route::prefix('category')->controller(\App\Http\Controllers\CategoryController::class)->group(function () {
+        Route::get('/{project}', 'index');
+        Route::get('/info/{category}', 'show');
+        Route::post('/', 'store');
+        Route::put('/{category}', 'update');
+        Route::delete('/{category}', 'destroy');
+    });
     Route::prefix('task')->controller(\App\Http\Controllers\TaskController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/{task}', 'show');

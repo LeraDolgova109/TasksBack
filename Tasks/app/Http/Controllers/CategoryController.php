@@ -24,9 +24,9 @@ class CategoryController extends Controller
         $project->tasks = Task::with('performers.user', 'category')->where('project_id', '=', (int)$projectID)->get();
         return response() -> json($project);
     }
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index($projectID): \Illuminate\Http\JsonResponse
     {
-        $category = Category::where('project_id', '=', $request['project_id'])->get();
+        $category = Category::where('project_id', '=', $projectID)->get();
         return response() -> json($category);
     }
 
