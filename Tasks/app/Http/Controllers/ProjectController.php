@@ -21,7 +21,10 @@ class ProjectController extends Controller
         {
             $projects[] = $project;
         }
-        $userProjects = UserInProject::with('project')->where('user_id', '=', $user['id'])->get();
+        $userProjects = UserInProject::with('project')->where([
+            ['user_id', '=', $user['id']],
+            ['accepted', '=', 1]
+        ])->get();
         foreach ($userProjects as $project)
         {
             $projects[] = $project->project;
